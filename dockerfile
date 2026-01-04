@@ -1,9 +1,13 @@
-FROM openjdk:17.0.1 as builder
-COPY src/ /src/
-RUN javac /src/main/java/com/travelandrepeat/api/App.java -d /app
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /build
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-FROM openjdk:17.0.1
-COPY --from=builder /app /app
+# Runtime stage
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-
-CMD ["java", "com.travelandrepeat.api.App"]
+COPY --from=build /build/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
