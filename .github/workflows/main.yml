@@ -59,7 +59,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:latest
             ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:${{ env.DATE_TAG }}
             ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:${{ env.SHORT_SHA }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/travelandrepeat-be:latest
+            ${{ github.repository_owner }}/travelandrepeat-be:latest
 
       # Deploy to VPS
       - name: Deploy API to VPS via SSH
