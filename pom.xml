@@ -97,7 +97,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
-                    <!-- <archive><manifest><mainClass>com.travelandrepeat.api.App</mainClass></manifest></archive> -->
+                    <archive>
+                        <manifest>
+                            <mainClass>com.travelandrepeat.api.App</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
