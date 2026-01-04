@@ -1,10 +1,9 @@
-FROM eclipse-temurin:17-jre
+FROM openjdk:17.0.1 as builder
+COPY src/ /src/
+RUN javac /src/main/java/com/travelandrepeat/api/App.java -d /app
 
+FROM openjdk:17.0.1
+COPY --from=builder /app /app
 WORKDIR /app
 
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-
-EXPOSE 8080
-
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+CMD ["java", "com.travelandrepeat.api.App"]
