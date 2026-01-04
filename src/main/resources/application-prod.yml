@@ -18,7 +18,7 @@ spring:
           starttls:
             enable: true
           ssl:
-            trust: smtp.gmail.com
+            trust: ${MAIL_HOST}
           connectiontimeout: 5000
 
 # Agent Mail
