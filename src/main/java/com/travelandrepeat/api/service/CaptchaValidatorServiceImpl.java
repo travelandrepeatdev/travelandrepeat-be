@@ -35,6 +35,7 @@ public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
         }
 
         if (recaptchaResponse != null) {
+            log.info("reCAPTCHA from {} was solved", recaptchaResponse.hostname());
             if (!recaptchaResponse.success()) {
                 log.error("reCAPTCHA verification failed: {}", recaptchaResponse.errorCodes());
                 throw new Exception("reCAPTCHA invalid");
