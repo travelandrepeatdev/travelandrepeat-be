@@ -6,6 +6,7 @@ server:
 spring:
   application:
     name: travelandrepeat-be
+    profile: dev
   mail:
     host: ${MAIL_HOST}
     port: 587
@@ -20,6 +21,11 @@ spring:
           ssl:
             trust: ${MAIL_HOST}
           connectiontimeout: 5000
+#  datasource:
+#    url: jdbc
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password: ""
 
 # Agent Mail
 mail:
@@ -32,13 +38,20 @@ cors:
   allowed-headers: "*"
   allow-credentials: false
 
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#    open-in-view: false
+
+# Get your keys at: https://www.google.com/recaptcha/admin
 google:
   recaptcha:
     secret: ${RECAPTCHA_SECRET}
     verify-url: https://www.google.com/recaptcha/api/siteverify
 
 banxico:
-  api-url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/oportuno"
+  api-url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/oportuno?token="
   token: ${BANXICO_TOKEN}
 
 # expose health and info endpoints over HTTP
@@ -52,4 +65,5 @@ management:
 
 logging:
   level:
-    root: WARN
+    root: INFO
+    org.springframework.web: DEBUG

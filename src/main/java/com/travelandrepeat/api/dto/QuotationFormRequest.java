@@ -2,6 +2,7 @@ package com.travelandrepeat.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.NonNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public record QuotationFormRequest(
@@ -52,4 +53,31 @@ public record QuotationFormRequest(
 
         @NotBlank
         String recaptchaToken
-){}
+){
+    @NonNull
+    @Override
+    public String toString() {
+        return "QuotationFormRequest = {" +
+                " completeName: " + completeName +
+                " email: " + email +
+                " phone: " + phone +
+                " countryCity: " + countryCity +
+                " destiny: " + destiny +
+                " outDate: " + outDate +
+                " returnDate: " + returnDate +
+                " areDatesFlexible: " + areDatesFlexible +
+                " budget: " + budget +
+                " levelType: " + levelType +
+                " priority: " + priority +
+                " totalTravelers: " + totalTravelers +
+                " totalAdults: " + totalAdults +
+                " totalMinors: " + totalMinors +
+                " minorsAges: " + minorsAges +
+                " areBabiesTraveling: " + areBabiesTraveling +
+                " tripType: " + tripType +
+                " tripTheme: " + tripTheme +
+                " comments: " + comments +
+                " recaptchaToken: " + recaptchaToken +
+                "}";
+    }
+}

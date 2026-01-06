@@ -93,7 +93,6 @@ jobs:
               -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
               -e CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }} \
               -e RECAPTCHA_SECRET=${{ secrets.RECAPTCHA_SECRET }} \
-              -e RECAPTCHA_VERIFY_URL=${{ secrets.RECAPTCHA_VERIFY_URL }} \
               ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:latest
 
             echo "== API Deployment completed successfully =="
