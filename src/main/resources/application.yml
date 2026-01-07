@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: travelandrepeat-be
+
+# expose health and info endpoints over HTTP
+management:
+  endpoints:
+    web:
+    exposure:
+    include: health,info
+    health:
+      show-details: always
