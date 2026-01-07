@@ -9,7 +9,7 @@ public record RecaptchaResponse (
     @JsonProperty("challenge_ts")
     String challengeTs,
     String hostname,
-    double score,
+    Double score,
     String action,
     @JsonProperty("error-codes")
     List<String> errorCodes

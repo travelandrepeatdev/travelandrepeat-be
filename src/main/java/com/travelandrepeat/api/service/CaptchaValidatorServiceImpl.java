@@ -40,7 +40,7 @@ public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
                 log.error("reCAPTCHA verification failed: {}", recaptchaResponse.errorCodes());
                 throw new Exception("reCAPTCHA invalid");
             }
-            if (recaptchaResponse.score() < 0.5) {
+            if (recaptchaResponse.score() != null && recaptchaResponse.score() < 0.5) {
                 log.error("reCAPTCHA score too low: {}", recaptchaResponse.score());
                 throw new Exception("Suspect activity detected");
             }
