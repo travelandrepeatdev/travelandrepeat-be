@@ -6,7 +6,6 @@ server:
 spring:
   application:
     name: travelandrepeat-be
-  profile: prod
   mail:
     host: ${MAIL_HOST}
     port: 587
@@ -40,7 +39,7 @@ google:
 
 banxico:
   api-url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/oportuno"
-  token: ${BANXICO_TOKEN}
+  token: ${BANXICO_TOKEN:50275914e8b7ee04be8807d102f076c52bebb855410664f31a54e7bca0c3de38}
 
 # expose health and info endpoints over HTTP
 management:

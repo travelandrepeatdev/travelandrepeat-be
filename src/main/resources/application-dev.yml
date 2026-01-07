@@ -6,7 +6,6 @@ server:
 spring:
   application:
     name: travelandrepeat-be
-  profile: dev
   mail:
     host: ${MAIL_HOST}
     port: 587
