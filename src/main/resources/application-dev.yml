@@ -1,11 +1,17 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
 spring:
   application:
-    profile: dev
+    name: travelandrepeat-be
+  profile: dev
   mail:
-    host: smtp.gmail.com
+    host: ${MAIL_HOST}
     port: 587
-    username: "travelandrepeatdev@gmail.com"
-    password: "kxwy dfrj drej kiuj" # set secret in real app with double quotes if special chars
+    username: ${MAIL_QUOTATION_FROM}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -13,7 +19,7 @@ spring:
           starttls:
             enable: true
           ssl:
-            trust: smtp.gmail.com
+            trust: ${MAIL_HOST}
           connectiontimeout: 5000
 #  datasource:
 #    url: jdbc
@@ -23,11 +29,11 @@ spring:
 
 # Agent Mail
 mail:
-  agent-to: "sereal_666@hotmail.com"
-  quotation-from: "travelandrepeatdev@gmail.com"
+  agent-to: ${MAIL_AGENT_TO}
+  quotation-from: ${MAIL_QUOTATION_FROM}
 
 cors:
-  allowed-origins: "http://localhost:3000"
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
   allowed-methods: GET, POST, PUT, DELETE, OPTIONS
   allowed-headers: "*"
   allow-credentials: false
@@ -41,12 +47,21 @@ cors:
 # Get your keys at: https://www.google.com/recaptcha/admin
 google:
   recaptcha:
-    secret: "6LdkwTIsAAAAABTv_wOO74vbabBi018aMIjEBb0H"
+    secret: ${RECAPTCHA_SECRET}
     verify-url: https://www.google.com/recaptcha/api/siteverify
 
 banxico:
   api-url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/oportuno?token="
-  token: "50275914e8b7ee04be8807d102f076c52bebb855410664f31a54e7bca0c3de38"
+  token: ${BANXICO_TOKEN}
+
+# expose health and info endpoints over HTTP
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  health:
+    show-details: always
 
 logging:
   level:

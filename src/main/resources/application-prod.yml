@@ -1,6 +1,12 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
 spring:
   application:
-    profile: prod
+    name: travelandrepeat-be
+  profile: prod
   mail:
     host: ${MAIL_HOST}
     port: 587
@@ -35,6 +41,15 @@ google:
 banxico:
   api-url: "https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/oportuno"
   token: ${BANXICO_TOKEN}
+
+# expose health and info endpoints over HTTP
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  health:
+    show-details: always
 
 logging:
   level:
