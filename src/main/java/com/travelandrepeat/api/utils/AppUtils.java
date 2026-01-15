@@ -6,4 +6,11 @@ public class AppUtils {
         String format = "%." + decimalPlaces + "f";
         return String.format(format, value);
     }
+
+    public static String extractYesOrNotFromBoolean(Boolean is) {
+        if (is != null) {
+            return is ? "Sí" : "No";
+        }
+        return "";
+    }
 }
