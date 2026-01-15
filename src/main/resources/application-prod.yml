@@ -2,6 +2,7 @@ server:
   port: 8080
   servlet:
     context-path: /api
+  forward-headers-strategy: framework
 
 spring:
   application:
@@ -28,8 +29,8 @@ mail:
 
 cors:
   allowed-origins:
-    - ${CORS_ALLOWED_ORIGINS_1}
-    - ${CORS_ALLOWED_ORIGINS_2}
+    - https://travelandrepeat.com.mx
+    - https://www.travelandrepeat.com.mx
   allowed-methods: GET, POST, PUT, DELETE, OPTIONS
   allowed-headers: "*"
   allow-credentials: false
