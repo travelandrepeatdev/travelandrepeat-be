@@ -36,9 +36,9 @@ public record QuotationFormRequest(
         String priority,
 
         /* Travelers Information */
-        int totalTravelers,
-        int totalAdults,
-        int totalMinors,
+        Integer totalTravelers,
+        Integer totalAdults,
+        Integer totalMinors,
         String minorsAges,
         boolean areBabiesTraveling,
 

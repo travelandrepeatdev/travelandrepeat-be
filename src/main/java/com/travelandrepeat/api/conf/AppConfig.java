@@ -71,7 +71,7 @@ public class AppConfig {
 
     // MimeMessage configuration ----------------
     @Bean
-    MimeMessage mimeMessage(JavaMailSender mailSender) throws MessagingException {
+    public MimeMessage mimeMessage(JavaMailSender mailSender) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(toAgent);
