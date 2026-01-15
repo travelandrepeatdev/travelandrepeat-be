@@ -3,6 +3,7 @@ package com.travelandrepeat.api.service;
 import com.travelandrepeat.api.dto.RecaptchaResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.util.LinkedMultiValueMap;
@@ -11,6 +12,7 @@ import org.springframework.util.MultiValueMap;
 @Slf4j
 @Service
 @SuppressWarnings("unused")
+@ConditionalOnProperty(name = "spring.profiles.active", havingValue = "prod")
 public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
 
     @Value("${google.recaptcha.secret}")
@@ -19,7 +21,14 @@ public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
     @Value("${google.recaptcha.verify-url}")
     private String verifyUrl;
 
+    @Value("${google.recaptcha.enabled")
+    private boolean recaptchaEnabled;
+
     public void verify(String token) throws Exception {
+        if (!recaptchaEnabled) {
+            return;
+        }
+
         RestTemplate restTemplate = new RestTemplate();
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("secret", secret);

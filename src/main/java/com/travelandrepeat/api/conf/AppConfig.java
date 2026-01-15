@@ -63,7 +63,6 @@ public class AppConfig {
     // CORS configuration -----------------------
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        System.out.println(allowedOrigins);
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(allowedOrigins);
         config.setAllowedMethods(allowedMethods);

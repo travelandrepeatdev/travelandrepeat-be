@@ -50,8 +50,6 @@ public record QuotationFormRequest(
 
         /* Additional Comments */
         String comments,
-
-        @NotBlank
         String recaptchaToken
 ){
     @NonNull
