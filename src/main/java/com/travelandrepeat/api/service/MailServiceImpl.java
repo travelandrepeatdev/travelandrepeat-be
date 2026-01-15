@@ -68,8 +68,8 @@ public class MailServiceImpl implements MailService {
                             </h3>
                             <p>
                               <b>Destino:</b> {{destiny}}<br>
-                              <b>Fecha de salida:</b> {{outDate}}<br>
-                              <b>Fecha de regreso:</b> {{returnDate}}<br>
+                              <b>Fecha de salida (aaaa-mm-dd):</b> {{outDate}}<br>
+                              <b>Fecha de regreso (aaaa-mm-dd):</b> {{returnDate}}<br>
                               <b>Fechas flexibles:</b> {{areDatesFlexible}}<br>
                               <b>Visa vigente:</b> {{haveVisa}}<br>
                               <b>Pasaporte Vigente:</b> {{havePassport}}
