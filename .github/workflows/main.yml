@@ -28,10 +28,7 @@ jobs:
       - name: Generate version tags
         id: vars
         run: |
-          DATE_TAG=$(date +'%Y.%m.%d')
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          echo "DATE_TAG=$DATE_TAG" >> $GITHUB_ENV
-          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       # Login to GHCR
       - name: Login to GHCR
@@ -57,7 +54,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:latest
-            ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:${{ env.DATE_TAG }}
             ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:${{ env.SHORT_SHA }}
             ${{ github.repository_owner }}/travelandrepeat-be:latest
 
@@ -69,21 +65,32 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e
+
+            IMAGE=ghcr.io/${{ github.repository_owner }}/travelandrepeat-fe:${{ env.SHORT_SHA }}
+            
             echo "== Login to GHCR =="
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
             echo "== Pulling latest API image =="
-            docker pull ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:latest
+            docker pull $IMAGE
 
             echo "== Stopping old container =="
             docker stop tyr-be || true
 
             echo "== Removing old container =="
             docker rm tyr-be || true
+            
+            echo "== Removing old container =="
+            docker rm tyr-be || true
+
+            echo "== Hard reset container =="
+            docker image prune -af
 
             echo "== Starting new API container =="
             docker run -d \
               --name tyr-be \
+              --restart unless-stopped \
               -p 8080:8080 \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e MAIL_AGENT_TO=${{ secrets.MAIL_AGENT_TO }} \
@@ -93,6 +100,6 @@ jobs:
               -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
               -e CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }} \
               -e RECAPTCHA_SECRET=${{ secrets.RECAPTCHA_SECRET }} \
-              ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:latest
+              $IMAGE
 
             echo "== API Deployment completed successfully =="
