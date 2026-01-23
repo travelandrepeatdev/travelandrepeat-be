@@ -80,9 +80,6 @@ jobs:
 
             echo "== Removing old container =="
             docker rm tyr-be || true
-            
-            echo "== Removing old container =="
-            docker rm tyr-be || true
 
             echo "== Hard reset container =="
             docker image prune -af
