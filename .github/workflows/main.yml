@@ -81,13 +81,9 @@ jobs:
             echo "== Removing old container =="
             docker rm tyr-be || true
 
-            echo "== Hard reset container =="
-            docker image prune -f
-
             echo "== Starting new API container =="
             docker run -d \
               --name tyr-be \
-              --restart unless-stopped \
               -p 8080:8080 \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e MAIL_AGENT_TO=${{ secrets.MAIL_AGENT_TO }} \
