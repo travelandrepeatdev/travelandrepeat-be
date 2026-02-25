@@ -82,7 +82,7 @@ jobs:
             docker rm tyr-be || true
 
             echo "== Hard reset container =="
-            docker image prune -af
+            docker image prune -f
 
             echo "== Starting new API container =="
             docker run -d \
