@@ -64,10 +64,11 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          envs: SHORT_SHA
           script: |
             set -e
 
-            IMAGE=ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:${{ env.SHORT_SHA }}
+            IMAGE=ghcr.io/${{ github.repository_owner }}/travelandrepeat-be:${ SHORT_SHA }
             
             echo "== Login to GHCR =="
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
@@ -82,10 +83,10 @@ jobs:
             docker rm tyr-be || true
 
             echo "== Hard reset container =="
-            docker image prune -af
+            docker image prune -f
 
             echo "== Starting new API container =="
-            docker run -d \
+            docker run --pull=always -d \
               --name tyr-be \
               --restart unless-stopped \
               -p 8080:8080 \
