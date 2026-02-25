@@ -37,8 +37,8 @@ public class AppConfig {
     private String fromQuotation;
 
     // Config CORS Properties -------------------
-    @Value("${cors.allowed-origins-patterns}")
-    private List<String> allowedOriginsPatterns;
+    @Value("${cors.allowed-origins}")
+    private List<String> allowedOrigins;
 
     @Value("${cors.allowed-methods}")
     private List<String> allowedMethods;
@@ -69,7 +69,7 @@ public class AppConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(allowedOriginsPatterns);
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(allowedMethods);
         config.setAllowedHeaders(allowedHeaders);
         config.setAllowCredentials(allowCredentials);
