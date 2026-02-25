@@ -81,9 +81,6 @@ jobs:
             echo "== Removing old container =="
             docker rm tyr-be || true
 
-            echo "== Hard reset container =="
-            docker image prune -f
-
             echo "== Starting new API container =="
             docker run --pull=always -d \
               --name tyr-be \
