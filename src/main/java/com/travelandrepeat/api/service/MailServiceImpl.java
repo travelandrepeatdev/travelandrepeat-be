@@ -1,6 +1,7 @@
 package com.travelandrepeat.api.service;
 
 import com.travelandrepeat.api.dto.QuotationFormRequest;
+import com.travelandrepeat.api.utils.AppUtils;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +68,11 @@ public class MailServiceImpl implements MailService {
                             </h3>
                             <p>
                               <b>Destino:</b> {{destiny}}<br>
-                              <b>Fecha de salida:</b> {{outDate}}<br>
-                              <b>Fecha de regreso:</b> {{returnDate}}<br>
-                              <b>Fechas flexibles:</b> {{areDatesFlexible}}
+                              <b>Fecha de salida (aaaa-mm-dd):</b> {{outDate}}<br>
+                              <b>Fecha de regreso (aaaa-mm-dd):</b> {{returnDate}}<br>
+                              <b>Fechas flexibles:</b> {{areDatesFlexible}}<br>
+                              <b>Visa vigente:</b> {{haveVisa}}<br>
+                              <b>Pasaporte Vigente:</b> {{havePassport}}
                             </p>
                 
                             <!-- BUDGET -->
@@ -135,19 +138,21 @@ public class MailServiceImpl implements MailService {
         mailContent = mailContent.replace("{{completeName}}", request.completeName())
                 .replace("{{email}}", request.email())
                 .replace("{{phone}}", request.phone())
-                .replace("{{countryCity}}", request.countryCity())
+                .replace("{{countryCity}}", request.countryCity().isBlank() ? "" : request.countryCity())
                 .replace("{{destiny}}", request.destiny())
                 .replace("{{outDate}}", request.outDate())
                 .replace("{{returnDate}}", request.returnDate())
-                .replace("{{areDatesFlexible}}", request.areDatesFlexible() ? "Sí" : "No")
-                .replace("{{budget}}", request.budget())
+                .replace("{{areDatesFlexible}}", AppUtils.extractYesOrNotFromBoolean(request.areDatesFlexible()))
+                .replace("{{haveVisa}}",  AppUtils.extractYesOrNotFromBoolean(request.haveVisa()))
+                .replace("{{havePassport}}",  AppUtils.extractYesOrNotFromBoolean(request.havePassport()))
+                .replace("{{budget}}", request.budget().isBlank() ? "" : request.budget())
                 .replace("{{levelType}}", request.levelType())
                 .replace("{{priority}}", request.priority())
                 .replace("{{totalTravelers}}", String.valueOf(request.totalTravelers()))
                 .replace("{{totalAdults}}", String.valueOf(request.totalAdults()))
-                .replace("{{totalMinors}}", String.valueOf(request.totalMinors()))
-                .replace("{{minorsAges}}", request.minorsAges())
-                .replace("{{areBabiesTraveling}}", request.areBabiesTraveling() ? "Sí" : "No")
+                .replace("{{totalMinors}}", request.totalMinors() != null ? String.valueOf(request.totalMinors()) : "")
+                .replace("{{minorsAges}}", request.minorsAges() != null ? request.minorsAges() : "")
+                .replace("{{areBabiesTraveling}}", AppUtils.extractYesOrNotFromBoolean(request.areBabiesTraveling()))
                 .replace("{{tripType}}", request.tripType())
                 .replace("{{tripTheme}}", request.tripTheme())
                 .replace("{{comments}}", request.comments().isBlank() ? "(Ninguno)" : request.comments());

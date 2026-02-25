@@ -27,6 +27,8 @@ public record QuotationFormRequest(
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         String returnDate,
         boolean areDatesFlexible,
+        Boolean haveVisa,
+        Boolean havePassport,
 
         /* Budget and Priorities */
         String budget,
