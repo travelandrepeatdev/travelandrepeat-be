@@ -81,8 +81,11 @@ jobs:
             echo "== Removing old container =="
             docker rm tyr-be || true
 
+            echo "== Hard reset container =="
+            docker image prune -af
+
             echo "== Starting new API container =="
-            docker run --pull=always -d \
+            docker run -d \
               --name tyr-be \
               --restart unless-stopped \
               -p 8080:8080 \
@@ -97,6 +100,7 @@ jobs:
               -e DB_USER=${{ secrets.DB_USER }} \
               -e DB_PASS=${{ secrets.DB_PASS }} \
               -e BANXICO_TOKEN=${{ secrets.BANXICO_TOKEN }} \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} $IMAGE
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              $IMAGE
 
             echo "== API Deployment completed successfully =="
