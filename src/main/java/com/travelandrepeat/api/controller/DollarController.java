@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/dollar")
 public class DollarController {
@@ -17,7 +16,7 @@ public class DollarController {
     private BanxicoService banxicoService;
 
     @GetMapping(path = "/rate")
-    public ResponseEntity<String> getDollarRate() {
+    public ResponseEntity<?> getDollarRate() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(banxicoService.getExchangeRate());
