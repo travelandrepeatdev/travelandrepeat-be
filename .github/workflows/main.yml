@@ -95,7 +95,6 @@ jobs:
               -e MAIL_HOST=${{ secrets.MAIL_HOST }} \
               -e MAIL_PORT=587 \
               -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
-              -e CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }} \
               -e RECAPTCHA_SECRET=${{ secrets.RECAPTCHA_SECRET }} \
               -e DB_URL=${{ secrets.DB_URL }} \
               -e DB_USER=${{ secrets.DB_USER }} \
