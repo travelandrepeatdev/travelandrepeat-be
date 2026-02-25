@@ -5,8 +5,6 @@ server:
   forward-headers-strategy: framework
 
 spring:
-  profiles:
-    active: prod
   application:
     name: travelandrepeat-be
   mail:
