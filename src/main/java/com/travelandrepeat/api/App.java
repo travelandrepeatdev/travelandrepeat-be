@@ -12,6 +12,6 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(App.class, args);
         log.info("Application started with context: {}", context.getDisplayName());
-        log.info("Travel & Repeat API is running...");
+        log.warn("✈ Travel & Repeat API is running now!");
     }
 }

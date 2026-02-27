@@ -15,6 +15,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -55,13 +56,24 @@ public class AppConfig {
     // Security filter chain configuration ------
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                // API → no CSRF
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                // No sessions (JWT only)
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Authorization rules
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // permit all including jwt
                         .anyRequest().permitAll()
-                ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+                )
+                // Disable default login mechanisms
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                // JWT filter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

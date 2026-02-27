@@ -23,19 +23,21 @@ public class PromotionImageService {
     private String uploadPublicUrl;
 
     public String save(MultipartFile file) {
-        String filename = null;
+        String filename;
         if (file != null && !file.isEmpty()) {
             String extension = extractExtension(file.getOriginalFilename());
 
+            filename = UUID.randomUUID() + extension;
+            log.info("Uploading file: {}", filename);
             try {
                 Path root = Paths.get(uploadDir);
                 Files.createDirectories(root);
-                filename = UUID.randomUUID() + extension;
+
                 Path target = root.resolve(filename);
 
                 file.transferTo(target);
             } catch (IOException e) {
-                log.error("Failed to store file {}", filename, e);
+                log.error("Failed to store file {} with name {}", file.getName(), filename, e);
                 throw new RuntimeException(e);
             }
 
