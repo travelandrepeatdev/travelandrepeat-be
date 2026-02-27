@@ -85,6 +85,7 @@ jobs:
             docker run -d \
               --name tyr-be \
               -p 8080:8080 \
+              -v /var/www/promotionImages:/uploads \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e MAIL_AGENT_TO=${{ secrets.MAIL_AGENT_TO }} \
               -e MAIL_QUOTATION_FROM=${{ secrets.MAIL_QUOTATION_FROM }} \

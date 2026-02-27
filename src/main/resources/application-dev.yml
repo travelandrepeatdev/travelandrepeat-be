@@ -65,6 +65,10 @@ jwt:
   secret: ${JWT_SECRET}
   expiration: "3600000" # 1 hour in milliseconds
 
+volumes:
+  upload-dir: /uploads
+  upload-public-url: /images/
+
 # expose health and info endpoints over HTTP
 management:
   endpoints:

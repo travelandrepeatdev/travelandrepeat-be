@@ -35,17 +35,17 @@ public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
         }
 
         if (recaptchaResponse != null) {
-            log.error("reCAPTCHA from {} was solved.", recaptchaResponse.hostname());
+            log.info("reCAPTCHA from {} was solved.", recaptchaResponse.hostname());
             if (!recaptchaResponse.success()) {
                 log.error("reCAPTCHA verification failed: {}", recaptchaResponse.errorCodes());
                 throw new Exception("reCAPTCHA invalid");
             }
             if (recaptchaResponse.score() != null && recaptchaResponse.score() < 0.5) {
-                log.error("reCAPTCHA score too low: {}", recaptchaResponse.score());
+                log.warn("reCAPTCHA score too low: {}", recaptchaResponse.score());
                 throw new Exception("Suspect activity detected");
             }
         } else {
-            log.error("Empty reCAPTCHA response");
+            log.warn("Empty reCAPTCHA response");
             throw new Exception("Empty reCAPTCHA response");
         }
     }

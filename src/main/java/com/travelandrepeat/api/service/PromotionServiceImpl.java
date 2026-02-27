@@ -7,7 +7,10 @@ import com.travelandrepeat.api.repository.PromotionRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,10 +24,18 @@ public class PromotionServiceImpl implements PromotionService {
     @Autowired
     private PromotionRepo promotionRepo;
 
+    @Autowired
+    private PromotionImageService promotionImageService;
+
     @Override
-    public PromotionResponse addPromotion(PromotionRequest promotionRequest, boolean isUpdate) {
+    @Transactional
+    public PromotionResponse addPromotion(MultipartFile image, PromotionRequest promotionRequest, boolean isUpdate) {
         PromotionResponse promotionResponse;
         Promotion promotion = mapRequestToEntity(promotionRequest, isUpdate);
+
+        String imageUrl = promotionImageService.save(image);
+        promotion.setImageUrl(imageUrl);
+
         Promotion promotionEntity = promotionRepo.save(promotion);
         promotionResponse = mapEntityToResponse(promotionEntity);
         return promotionResponse;
@@ -49,51 +60,60 @@ public class PromotionServiceImpl implements PromotionService {
 
     private Promotion mapRequestToEntity(PromotionRequest promotionRequest, boolean isUpdate) {
         return Promotion.builder()
-                .id(isUpdate ? promotionRequest.id() : null)
-                .endDate(promotionRequest.endDate() != null && !promotionRequest.endDate().isBlank() ?
-                        LocalDate.parse(promotionRequest.endDate()).atStartOfDay() : null)
-                .startDate(promotionRequest.startDate() != null && !promotionRequest.startDate().isBlank() ?
-                        LocalDate.parse(promotionRequest.startDate()).atStartOfDay() : null)
-                .description(promotionRequest.description())
-                .imageUrl(promotionRequest.imageUrl())
-                .isActive(promotionRequest.isActive())
-                .originalPrice(promotionRequest.originalPrice())
-                .currency(promotionRequest.currency())
-                .title(promotionRequest.title())
-                .destination(promotionRequest.destination())
-                .createdBy(promotionRequest.createdBy())
+                .id(isUpdate ? promotionRequest.getId() : null)
+                .endDate(promotionRequest.getEndDate() != null && !promotionRequest.getEndDate().isBlank() ?
+                        LocalDate.parse(promotionRequest.getEndDate()).atStartOfDay() : null)
+                .startDate(promotionRequest.getStartDate() != null && !promotionRequest.getStartDate().isBlank() ?
+                        LocalDate.parse(promotionRequest.getStartDate()).atStartOfDay() : null)
+                .description(promotionRequest.getDescription())
+                .isActive(promotionRequest.getIsActive())
+                .originalPrice(promotionRequest.getOriginalPrice())
+                .currency(promotionRequest.getCurrency())
+                .title(promotionRequest.getTitle())
+                .destination(promotionRequest.getDestination())
+                .createdBy(promotionRequest.getCreatedBy())
                 .updatedAt(LocalDateTime.now())
-                .promoPrice(promotionRequest.promoPrice())
-                .createdAt(isUpdate ? promotionRequest.createdAt() : LocalDateTime.now())
+                .promoPrice(promotionRequest.getPromoPrice())
+                .createdAt(isUpdate ? promotionRequest.getCreatedAt() : LocalDateTime.now())
                 .build();
     }
 
     @Override
-    public boolean removeProvider(UUID promotionId) {
-        promotionRepo.deleteById(promotionId);
-        return true;
+    @Transactional
+    public String removePromotion(UUID promotionId) {
+        Promotion promotion = promotionRepo.findById(promotionId).orElse(null);
+        if (promotion != null) {
+            promotionImageService.remove(promotion.getImageUrl());
+            promotionRepo.deleteById(promotionId);
+            return promotionId.toString();
+        } else {
+            log.warn("Promotion with id {} not found", promotionId);
+        }
+        return null;
     }
 
     @Override
-    public PromotionResponse modifyPromotion(PromotionRequest promotionRequest, boolean isUpdate) {
-        Promotion promotion = promotionRepo.findById(promotionRequest.id()).orElse(null);
+    @Transactional
+    public PromotionResponse modifyPromotion(MultipartFile image, PromotionRequest promotionRequest, boolean isUpdate) {
+        Promotion promotion = promotionRepo.findById(promotionRequest.getId()).orElse(null);
         if (promotion != null) {
-            // keep created fields so needs new clientRequest
-            return addPromotion(new PromotionRequest(
+            promotionImageService.remove(promotion.getImageUrl());
+
+            return addPromotion(image, new PromotionRequest(
                     promotion.getId(),
-                    promotionRequest.title(),
-                    promotionRequest.description(),
-                    promotionRequest.destination(),
-                    promotionRequest.originalPrice(),
-                    promotionRequest.promoPrice(),
-                    promotionRequest.currency(),
-                    promotionRequest.imageUrl(),
-                    promotionRequest.startDate(),
-                    promotionRequest.endDate(),
-                    promotionRequest.isActive(),
+                    promotionRequest.getTitle(),
+                    promotionRequest.getDescription(),
+                    promotionRequest.getDestination(),
+                    promotionRequest.getOriginalPrice(),
+                    promotionRequest.getPromoPrice(),
+                    promotionRequest.getCurrency(),
+                    promotionRequest.getStartDate(),
+                    promotionRequest.getEndDate(),
+                    promotionRequest.getIsActive(),
                     promotion.getCreatedBy(),
-                    promotionRequest.updatedAt(),
-                    promotion.getCreatedAt()
+                    promotionRequest.getUpdatedAt(),
+                    promotion.getCreatedAt(),
+                    promotionRequest.getImageUrl()
             ), isUpdate);
         }
         return null;
@@ -125,6 +145,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
+    @Transactional
     public PromotionResponse enableDisable(UUID promotionId) {
         Promotion promotion = promotionRepo.findById(promotionId).orElse(null);
         if (promotion != null) {
