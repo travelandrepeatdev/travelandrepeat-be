@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - /db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: tyrdb
+      DB_URL: jdbc:postgresql://postgres:5432/tyrdb
+
+  backend:
+    build: .
+    user: root
+    image: tyr-be
+    container_name: tyr-be
+    ports:
+      - "8080:8080"
+    volumes:
+      - /Users/checoalfa/docker-data/promotionImages:/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+      DB_USER: postgres
+      DB_PASS: secret
+      DB_URL: jdbc:postgresql://postgres:5432/tyrdb
+
+      MAIL_HOST: smtp.gmail.com
+      MAIL_QUOTATION_FROM: # MAIL_QUOTATION_FROM
+      MAIL_PASSWORD: # MAIL_PASSWORD
+      MAIL_AGENT_TO: # MAIL_AGENT_TO
+
+      RECAPTCHA_SECRET: # RECAPTCHA_SECRET
+      BANXICO_TOKEN: # BANXICO_TOKEN
+      JWT_SECRET: # JWT_SECRET
+
+volumes:
+  postgres_data:
