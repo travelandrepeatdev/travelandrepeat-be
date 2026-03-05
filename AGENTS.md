@@ -21,3 +21,4 @@ Handles:
 
 ## Security considerations
 - Some methods use jwt strategy for the app internally, other methods are used for the public landing page
+- Never send tokens, passwords or secrets to the repository public
