@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.travelandrepeat.api.dto.UserLoginDetails.PRIVILEGE_ADMIN;
-import static com.travelandrepeat.api.dto.UserLoginDetails.PRIVILEGE_USER;
+import static com.travelandrepeat.api.dto.Role.*;
 
 @Slf4j
 @Service
@@ -43,7 +42,10 @@ public class LoginServiceImpl implements LoginService {
     public LoginResponse profile(UserLoginDetails userLoginDetails) {
         if (userLoginDetails == null) return null;
         String role = userLoginDetails.getUser().roles().stream().filter(
-                r -> r.equalsIgnoreCase(PRIVILEGE_ADMIN) || r.equalsIgnoreCase(PRIVILEGE_USER))
+                r -> r.equalsIgnoreCase(ADMIN.name()) ||
+                            r.equalsIgnoreCase(AGENT.name()) ||
+                            r.equalsIgnoreCase(AUDIT.name()) ||
+                            r.equalsIgnoreCase(VIEWER.name()))
                 .findFirst()
                 .orElse(null);
         List<String> permissions = userLoginDetails.getUser().roles().stream()
