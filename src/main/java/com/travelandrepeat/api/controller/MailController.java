@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/mail")
 public class MailController {

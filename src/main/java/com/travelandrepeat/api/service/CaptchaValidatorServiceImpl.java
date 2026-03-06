@@ -2,9 +2,7 @@ package com.travelandrepeat.api.service;
 
 import com.travelandrepeat.api.dto.RecaptchaResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.util.LinkedMultiValueMap;
@@ -21,16 +19,7 @@ public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
     @Value("${google.recaptcha.verify-url}")
     private String verifyUrl;
 
-    @Autowired
-    private Environment environment;
-
-    private static final String DEFAULT_ONLY_PROD_VALUE = "prod";
-
     public void verify(String token) throws Exception {
-        if (!environment.matchesProfiles(DEFAULT_ONLY_PROD_VALUE)) { // TODO: probably set config in appConfig
-            return;
-        }
-
         RestTemplate restTemplate = new RestTemplate();
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("secret", secret);
@@ -46,17 +35,17 @@ public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
         }
 
         if (recaptchaResponse != null) {
-            log.error("reCAPTCHA from {} was solved.", recaptchaResponse.hostname());
+            log.info("reCAPTCHA from {} was solved.", recaptchaResponse.hostname());
             if (!recaptchaResponse.success()) {
                 log.error("reCAPTCHA verification failed: {}", recaptchaResponse.errorCodes());
                 throw new Exception("reCAPTCHA invalid");
             }
             if (recaptchaResponse.score() != null && recaptchaResponse.score() < 0.5) {
-                log.error("reCAPTCHA score too low: {}", recaptchaResponse.score());
+                log.warn("reCAPTCHA score too low: {}", recaptchaResponse.score());
                 throw new Exception("Suspect activity detected");
             }
         } else {
-            log.error("Empty reCAPTCHA response");
+            log.warn("Empty reCAPTCHA response");
             throw new Exception("Empty reCAPTCHA response");
         }
     }
