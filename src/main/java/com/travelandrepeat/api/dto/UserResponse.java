@@ -9,16 +9,14 @@ import java.util.UUID;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record BlogRequest(
-        UUID id,
-        String title,
-        String slug,
-        String content,
-        String excerpt,
-        String coverImageUrl,
-        String status,
-        LocalDateTime publishedAt,
-        UUID createdBy,
+public record UserResponse(
+        UUID userId,
+        String email,
+        Boolean isActive,
+        LocalDateTime lastLogin,
+        String displayName,
+        String avatarUrl,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        String role
 ) {}

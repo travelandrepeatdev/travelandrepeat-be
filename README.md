@@ -40,7 +40,7 @@ Products:
 3. Run PostgreSQL Dockerized (Only tested pointing to db docker container)
 4. Build and run with IntelliJ
 
-### Option 2: Docker Compose
+### Option 2: Docker Compose (best option for test upload images)
 1. Configure docker-compose.yml  with the env vars see dev env shared secrets <https://lastpass.com>
     
 2. `docker-compose up -d`

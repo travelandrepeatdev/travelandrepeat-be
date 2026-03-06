@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -16,6 +18,7 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class User {
 
     @Id
@@ -47,7 +50,7 @@ public class User {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

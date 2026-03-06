@@ -13,16 +13,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.travelandrepeat.api.dto.Role.*;
 
 @Data
 @AllArgsConstructor
 public class UserLoginDetails implements UserDetails {
 
-    public static final String PRIVILEGE_ADMIN = "ADMIN";
-    public static final String PRIVILEGE_USER = "USER";
     private UserLogged user;
 
     @Override
@@ -31,7 +29,9 @@ public class UserLoginDetails implements UserDetails {
 
         user.roles().forEach(role -> authorities.add(
                 new SimpleGrantedAuthority(
-                        role.equalsIgnoreCase(PRIVILEGE_ADMIN) || role.equalsIgnoreCase(PRIVILEGE_USER) ? "ROLE_" + role : role)
+                        role.equalsIgnoreCase(ADMIN.name()) || role.equalsIgnoreCase(AGENT.name()) || role.equalsIgnoreCase(AUDIT.name())
+                                ? "ROLE_" + role
+                                : role)
                 )
         );
         return authorities;

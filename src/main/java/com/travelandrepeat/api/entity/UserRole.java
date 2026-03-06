@@ -14,21 +14,17 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "permissions")
+@Table(name = "user_roles")
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class Permission {
+public class UserRole {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, unique = true, name = "permission_id")
-    private UUID permissionId;
+    @Column(nullable = false, unique = true, name = "user_id")
+    private UUID userId;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(nullable = false, unique = true, name = "role_id")
+    private UUID roleId;
 
-    @Column
-    private String description;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(nullable = false, name = "assigned_at")
+    private LocalDateTime assignedAt;
 }
