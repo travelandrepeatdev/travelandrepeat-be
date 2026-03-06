@@ -29,7 +29,10 @@ public class UserLoginDetails implements UserDetails {
 
         user.roles().forEach(role -> authorities.add(
                 new SimpleGrantedAuthority(
-                        role.equalsIgnoreCase(ADMIN.name()) || role.equalsIgnoreCase(AGENT.name()) || role.equalsIgnoreCase(AUDIT.name())
+                        role.equalsIgnoreCase(ADMIN.name())
+                                || role.equalsIgnoreCase(AGENT.name())
+                                || role.equalsIgnoreCase(AUDIT.name())
+                                || role.equalsIgnoreCase(VIEWER.name())
                                 ? "ROLE_" + role
                                 : role)
                 )

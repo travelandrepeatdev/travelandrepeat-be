@@ -42,7 +42,10 @@ public class LoginServiceImpl implements LoginService {
     public LoginResponse profile(UserLoginDetails userLoginDetails) {
         if (userLoginDetails == null) return null;
         String role = userLoginDetails.getUser().roles().stream().filter(
-                r -> r.equalsIgnoreCase(ADMIN.name()) || r.equalsIgnoreCase(AGENT.name()) || r.equalsIgnoreCase(AUDIT.name()))
+                r -> r.equalsIgnoreCase(ADMIN.name()) ||
+                            r.equalsIgnoreCase(AGENT.name()) ||
+                            r.equalsIgnoreCase(AUDIT.name()) ||
+                            r.equalsIgnoreCase(VIEWER.name()))
                 .findFirst()
                 .orElse(null);
         List<String> permissions = userLoginDetails.getUser().roles().stream()
