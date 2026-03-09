@@ -35,13 +35,13 @@ Products:
    git clone <https://github.com/travelandrepeatdev/travelandrepeat-be.git>
 
    cd travelandrepeat-be
-2. Configure environment
+2. Configure environment, vars see dev env shared secrets <https://lastpass.com>
     - Set environment variables, `application-dev.yml` automatically take these vars
 3. Run PostgreSQL Dockerized (Only tested pointing to db docker container)
 4. Build and run with IntelliJ
 
 ### Option 2: Docker Compose (best option for test upload images)
-1. Configure docker-compose.yml  with the env vars see dev env shared secrets <https://lastpass.com>
+1. Configure docker-compose.yml  with the env, vars see dev env shared secrets <https://lastpass.com>
     
 2. `docker-compose up -d`
 
@@ -50,8 +50,6 @@ Docker postgres db -> run the init scripts and mount volume for db
 Docker api -> starts and mount the volumes
 
 API will be available at: http://localhost:8080
-
-Swagger UI: http://localhost:8080/swagger-ui.html
 
 ## 4. Environment Variables
 | Variable | Description |                Example                 |
@@ -88,7 +86,6 @@ Monolithic
 - Spring Framework
 - Maven
 - Postgres database (Supabase for prod env)
-- OpenAPI with Swagger UI
 - Docker
 - VPS Ubuntu Server
 - Nginx
