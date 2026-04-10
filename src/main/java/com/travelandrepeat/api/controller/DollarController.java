@@ -17,8 +17,6 @@ public class DollarController {
 
     @GetMapping(path = "/rate")
     public ResponseEntity<String> getDollarRate() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(banxicoService.getExchangeRate());
+        return ResponseEntity.status(HttpStatus.OK).body(banxicoService.getExchangeRate());
     }
 }

@@ -26,7 +26,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Slf4j
-@SuppressWarnings("unused")
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
@@ -61,14 +60,20 @@ public class AppConfig {
                 // API → no CSRF
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                // No sessions (JWT only)
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // permit all including jwt
-                        .anyRequest().permitAll()
+                        // endpoints públicos
+                        .requestMatchers(
+                                "/auth/login",
+                                "/auth/logout",
+                                "/dollar/rate",
+                                "/promotions/promotionListActive",
+                                "/mail/sendQuotationForm",
+                                "/images/**"
+                        ).permitAll()
+                        // lo demás requiere auth
+                        .anyRequest().authenticated()
                 )
                 // Disable default login mechanisms
                 .httpBasic(AbstractHttpConfigurer::disable)

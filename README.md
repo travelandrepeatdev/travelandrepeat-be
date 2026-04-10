@@ -29,20 +29,25 @@ Products:
 - Local Development (dev)
 - Docker Compose (dev)
 - production (prod)
-### Option 1: Local Development
-1. Clone the repository
 
-   git clone <https://github.com/travelandrepeatdev/travelandrepeat-be.git>
+First clone the repository:
 
-   cd travelandrepeat-be
-2. Configure environment, vars see dev env shared secrets <https://lastpass.com>
+`git clone https://github.com/travelandrepeatdev/travelandrepeat-be.git`
+
+`cd travelandrepeat-be`
+
+### Option 1: Local
+1. Configure environment vars, see dev env shared secrets <https://lastpass.com>
     - Set environment variables, `application-dev.yml` automatically take these vars
-3. Run PostgreSQL Dockerized (Only tested pointing to db docker container)
+    - IMPORTANT: If you run it locally, please verify your path resource to load images `env: local and resourcePath` it should have boolean true
+2. Get All dependencies with maven
+3. Run PostgreSQL database
 4. Build and run with IntelliJ
 
-### Option 2: Docker Compose (best option for test upload images)
+### Option 2: Docker Compose
 1. Configure docker-compose.yml  with the env, vars see dev env shared secrets <https://lastpass.com>
-    
+   - IMPORTANT: please verify your path resource to load images `env: local and resourcePath` by default local is boolean false
+   - IMPORTANT: please verify your path for images configured in docker `backend: volumes:` see the example
 2. `docker-compose up -d`
 
 Docker postgres db -> run the init scripts and mount volume for db
@@ -68,7 +73,7 @@ API will be available at: http://localhost:8080
 
 ## 5. Security
 ### Authentication & Authorization
-- JWT (JSON Web Tokens) for API authentication
+- Stateless JWT Authentication stored in HTTP-only Cookies
 - Spring Security for method-level authorization
 - Role-based access control (RBAC) with granular permissions
 - Password hashing using bcrypt

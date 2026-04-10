@@ -15,6 +15,11 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class PromotionImageService {
+    @Value("${env.local}")
+    private boolean isLocal;
+
+    @Value("${env.imageResource}")
+    private String imageResource;
 
     @Value("${volumes.upload-dir}")
     private String uploadDir;
@@ -30,7 +35,12 @@ public class PromotionImageService {
             filename = UUID.randomUUID() + extension;
             log.info("Uploading file: {}", filename);
             try {
-                Path root = Paths.get(uploadDir);
+                String dir = uploadDir;
+                if (isLocal){
+                    // remove last slash and file:
+                    dir = imageResource.substring(5, imageResource.length() - 1);
+                }
+                Path root = Paths.get(dir);
                 Files.createDirectories(root);
 
                 Path target = root.resolve(filename);
@@ -38,7 +48,6 @@ public class PromotionImageService {
                 file.transferTo(target);
             } catch (IOException e) {
                 log.error("Failed to store file {} with name {}", file.getName(), filename, e);
-                throw new RuntimeException(e);
             }
 
         } else {
@@ -58,18 +67,24 @@ public class PromotionImageService {
     }
 
     public String remove(String imageUrl) {
-        boolean wasDeleted;
+        boolean wasDeleted = false;
+
+        String dir = uploadDir;
+        if (isLocal){
+            // remove last slash
+            dir = imageResource.substring(5, imageResource.length() - 1);
+        }
+
         if (!imageUrl.isBlank()) {
             // remove public path for frontend
             imageUrl = imageUrl.split(uploadPublicUrl)[1];
             log.info("Promotion image {} to remove from dir local {}", imageUrl, uploadDir);
-            Path root = Paths.get(uploadDir);
+            Path root = Paths.get(dir);
             Path target = root.resolve(imageUrl);
             try {
                 wasDeleted = Files.deleteIfExists(target);
             } catch (IOException e) {
                 log.error("Failed to remove file {}", imageUrl, e);
-                throw new RuntimeException(e);
             }
         } else {
             log.warn("Promotion image not used");

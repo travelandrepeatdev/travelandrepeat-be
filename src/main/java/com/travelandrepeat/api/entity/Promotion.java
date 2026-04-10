@@ -32,9 +32,6 @@ public class Promotion {
     @Column(nullable = false)
     private String destination;
 
-    @Column(nullable = false, name = "original_price")
-    private BigDecimal originalPrice;
-
     @Column(nullable = false, name = "promo_price")
     private BigDecimal promoPrice;
 
@@ -43,12 +40,6 @@ public class Promotion {
 
     @Column(name = "image_url")
     private String imageUrl;
-
-    @Column(nullable = false, name = "start_date")
-    private LocalDateTime startDate;
-
-    @Column(nullable = false, name = "end_date")
-    private LocalDateTime endDate;
 
     @Column(nullable = false, name = "is_active")
     private boolean isActive;

@@ -9,6 +9,6 @@ import java.util.UUID;
 public interface ProviderService {
     List<ProviderResponse> getProviderList();
     ProviderResponse addProvider(ProviderRequest providerRequest, boolean isUpdate);
-    boolean removeProvider(UUID providerId);
+    String removeProvider(UUID providerId);
     ProviderResponse modifyProvider(ProviderRequest providerRequest, boolean isUpdate);
 }

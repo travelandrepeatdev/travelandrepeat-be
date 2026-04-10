@@ -17,11 +17,8 @@ public class PromotionRequest {
     private String title;
     private String description;
     private String destination;
-    private BigDecimal originalPrice;
     private BigDecimal promoPrice;
     private String currency;
-    private String startDate;
-    private String endDate;
     private Boolean isActive;
     private UUID createdBy;
     private LocalDateTime updatedAt;
