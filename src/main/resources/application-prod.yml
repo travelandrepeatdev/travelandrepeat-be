@@ -38,6 +38,10 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      initializationFailTimeout: 0
+      minimumIdle: 1
+      prepareThreshold: 0
 
 # Env local always false in prod
 env:
