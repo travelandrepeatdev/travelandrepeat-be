@@ -3,9 +3,9 @@ package com.travelandrepeat.api.controller;
 import com.travelandrepeat.api.dto.BlogRequest;
 import com.travelandrepeat.api.dto.BlogResponse;
 import com.travelandrepeat.api.service.BlogService;
-import jakarta.websocket.server.PathParam;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,32 +14,32 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/blogs")
 public class BlogController {
 
-    @Autowired
-    private BlogService blogService;
+    private final BlogService blogService;
 
     @PreAuthorize("hasAuthority('BLOG_READ')")
-    @GetMapping(path = "/blogList")
-    public ResponseEntity<List<BlogResponse>> getBlogList() {
-        return ResponseEntity.ok(blogService.getBlogList());
+    @GetMapping
+    public List<BlogResponse> getBlogList() {
+        return blogService.getBlogList();
     }
 
     @PreAuthorize("hasAuthority('BLOG_CREATE')")
-    @PostMapping(path = "/blog")
+    @PostMapping
     public ResponseEntity<BlogResponse> addBlog(@RequestBody BlogRequest blogRequest) {
-        return ResponseEntity.ok(blogService.addBlog(blogRequest, false));
+        return ResponseEntity.status(HttpStatus.CREATED).body(blogService.addBlog(blogRequest, false));
     }
 
     @PreAuthorize("hasAuthority('BLOG_DELETE')")
-    @DeleteMapping(path = "/blog")
-    public ResponseEntity<Boolean> deleteClient(@PathParam("blogId") UUID blogId) {
-        return ResponseEntity.ok(blogService.removeBlog(blogId));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteClient(@PathVariable UUID id) {
+        return ResponseEntity.ok(blogService.removeBlog(id));
     }
 
     @PreAuthorize("hasAuthority('BLOG_UPDATE')")
-    @PutMapping(path = "/blog")
+    @PutMapping
     public ResponseEntity<BlogResponse> updateClient(@RequestBody BlogRequest blogRequest) {
         return ResponseEntity.ok(blogService.modifyBlog(blogRequest, true));
     }

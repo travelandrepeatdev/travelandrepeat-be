@@ -29,7 +29,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         jdbc:
           time_zone: UTC
 
@@ -38,8 +38,18 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver
+    # HikariCP specific settings
+    hikari:
+      initializationFailTimeout: 0
+      minimumIdle: 1
+      data-source-properties:
+        prepareThreshold: 0
 
-# Agent Mail
+# Env local always false in prod
+env:
+  local: false
+  imageResource: none
+
 mail:
   agent-to: ${MAIL_AGENT_TO}
   quotation-from: ${MAIL_QUOTATION_FROM}
@@ -48,7 +58,7 @@ cors:
   allowed-origins: "https://travelandrepeat.com.mx, https://www.travelandrepeat.com.mx"
   allowed-methods: GET, POST, PUT, DELETE, OPTIONS
   allowed-headers: "*"
-  allow-credentials: false
+  allow-credentials: true
 
 google:
   recaptcha:

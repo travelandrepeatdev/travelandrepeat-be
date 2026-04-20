@@ -4,8 +4,8 @@ import com.travelandrepeat.api.dto.ClientRequest;
 import com.travelandrepeat.api.dto.ClientResponse;
 import com.travelandrepeat.api.entity.Client;
 import com.travelandrepeat.api.repository.ClientRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    @Autowired
-    private ClientRepo clientRepo;
+    private final ClientRepo clientRepo;
 
     @Override
     public List<ClientResponse> findAll() {
@@ -43,41 +43,47 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponse addClient(ClientRequest clientRequest, boolean isUpdate) {
-        ClientResponse clientResponse;
         Client client = mapRequestToEntity(clientRequest, isUpdate);
         Client clientEntity = clientRepo.save(client);
-        clientResponse = mapEntityToResponse(clientEntity);
-        return clientResponse;
+        return mapEntityToResponse(clientEntity);
     }
 
     @Override
-    public boolean removeClient(UUID clientId) {
-        clientRepo.deleteById(clientId);
-        return true;
+    public String removeClient(UUID clientId) {
+        Client clientEntity = clientRepo.findById(clientId).orElse(null);
+        if (clientEntity != null) {
+            clientRepo.deleteById(clientId);
+            return clientEntity.getId().toString();
+        } else {
+            log.warn("Client {} not deleted because does not exist", clientId);
+        }
+        return null;
     }
 
     @Override
     public ClientResponse modifyClient(ClientRequest clientRequest, boolean isUpdate) {
         Client client = clientRepo.findById(clientRequest.id()).orElse(null);
-        if (client != null) {
-            // keep created fields so needs new clientRequest
-            return addClient(new ClientRequest(
-                    client.getId(),
-                    clientRequest.name(),
-                    clientRequest.email(),
-                    clientRequest.phone(),
-                    clientRequest.countryCode(),
-                    clientRequest.address(),
-                    clientRequest.notes(),
-                    client.getCreatedBy(),
-                    client.getCreatedAt(),
-                    null // updatedAt Changed on save with isUpdate = true
-            ), isUpdate);
+        if (client == null) {
+            return null;
         }
-        return null;
+        return addClient(new ClientRequest(
+                client.getId(),
+                clientRequest.name(),
+                clientRequest.email(),
+                clientRequest.phone(),
+                clientRequest.countryCode(),
+                clientRequest.address(),
+                clientRequest.notes(),
+                client.getCreatedBy(),
+                client.getCreatedAt(),
+                null // updatedAt Changed on save with isUpdate = true
+        ), isUpdate);
     }
 
     private ClientResponse mapEntityToResponse(Client clientEntity) {
+        if (clientEntity == null) {
+            return null;
+        }
         return ClientResponse.builder()
                 .createdAt(clientEntity.getCreatedAt().toString())
                 .updatedAt(clientEntity.getUpdatedAt().toString())

@@ -4,8 +4,8 @@ import com.travelandrepeat.api.dto.ProviderRequest;
 import com.travelandrepeat.api.dto.ProviderResponse;
 import com.travelandrepeat.api.entity.Provider;
 import com.travelandrepeat.api.repository.ProviderRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ProviderServiceImpl implements ProviderService {
 
-    @Autowired
-    private ProviderRepo providerRepo;
+    private final ProviderRepo providerRepo;
 
     @Override
     public List<ProviderResponse> getProviderList() {
@@ -41,14 +41,15 @@ public class ProviderServiceImpl implements ProviderService {
 
     @Override
     public ProviderResponse addProvider(ProviderRequest providerRequest, boolean isUpdate) {
-        ProviderResponse providerResponse;
         Provider provider = mapRequestToEntity(providerRequest, isUpdate);
         Provider providerEntity = providerRepo.save(provider);
-        providerResponse = mapEntityToResponse(providerEntity);
-        return providerResponse;
+        return mapEntityToResponse(providerEntity);
     }
 
     private ProviderResponse mapEntityToResponse(Provider providerEntity) {
+        if (providerEntity == null) {
+            return null;
+        }
         return ProviderResponse.builder()
                 .id(providerEntity.getId())
                 .email(providerEntity.getEmail())
@@ -78,30 +79,35 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
-    public boolean removeProvider(UUID providerId) {
-        providerRepo.deleteById(providerId);
-        return true;
+    public String removeProvider(UUID providerId) {
+        Provider provider = providerRepo.findById(providerId).orElse(null);
+        if (provider != null) {
+            providerRepo.deleteById(providerId);
+            return provider.getId().toString();
+        } else {
+            log.warn("Provider {} not deleted because does not exist", providerId);
+        }
+        return null;
     }
 
     @Override
     public ProviderResponse modifyProvider(ProviderRequest providerRequest, boolean isUpdate) {
         Provider provider = providerRepo.findById(providerRequest.id()).orElse(null);
-        if (provider != null) {
-            // keep created fields so needs new clientRequest
-            return addProvider(new ProviderRequest(
-                    providerRequest.id(),
-                    providerRequest.name(),
-                    providerRequest.contactName(),
-                    providerRequest.email(),
-                    providerRequest.phone(),
-                    providerRequest.category(),
-                    providerRequest.website(),
-                    providerRequest.notes(),
-                    provider.getCreatedBy(),
-                    provider.getCreatedAt(),
-                    null // updatedAt Changed on save with isUpdate = true
-            ), isUpdate);
+        if (provider == null) {
+            return null;
         }
-        return null;
+        return addProvider(new ProviderRequest(
+                providerRequest.id(),
+                providerRequest.name(),
+                providerRequest.contactName(),
+                providerRequest.email(),
+                providerRequest.phone(),
+                providerRequest.category(),
+                providerRequest.website(),
+                providerRequest.notes(),
+                provider.getCreatedBy(),
+                provider.getCreatedAt(),
+                null // updatedAt Changed on save with isUpdate = true
+        ), isUpdate);
     }
 }

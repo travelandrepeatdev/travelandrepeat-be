@@ -6,25 +6,19 @@ import com.travelandrepeat.api.repository.BlogRepo;
 import com.travelandrepeat.api.repository.ClientRepo;
 import com.travelandrepeat.api.repository.PromotionRepo;
 import com.travelandrepeat.api.repository.ProviderRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import static com.travelandrepeat.api.service.BlogServiceImpl.PUBLISHED_STATUS;
 
+@RequiredArgsConstructor
 @Service
 public class DashboardServiceImpl implements DashboardService {
 
-    @Autowired
-    private ClientRepo clientRepo;
-
-    @Autowired
-    private ProviderRepo providerRepo;
-
-    @Autowired
-    private PromotionRepo promotionRepo;
-
-    @Autowired
-    private BlogRepo blogRepo;
+    private final ClientRepo clientRepo;
+    private final ProviderRepo providerRepo;
+    private final PromotionRepo promotionRepo;
+    private final BlogRepo blogRepo;
 
     @Override
     public DashboardStats getDashboardStats() {

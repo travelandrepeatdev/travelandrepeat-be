@@ -4,9 +4,8 @@ import com.travelandrepeat.api.dto.BlogRequest;
 import com.travelandrepeat.api.dto.BlogResponse;
 import com.travelandrepeat.api.entity.Blog;
 import com.travelandrepeat.api.repository.BlogRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,11 +14,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class BlogServiceImpl implements BlogService {
 
-    @Autowired
-    private BlogRepo blogRepo;
+    private final BlogRepo blogRepo;
 
     public static final String PUBLISHED_STATUS = "Publicado";
 
@@ -44,42 +43,48 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogResponse addBlog(BlogRequest blogRequest, boolean isUpdate) {
-        BlogResponse blogResponse;
         Blog blog = mapRequestToEntity(blogRequest, isUpdate);
         Blog blogEntity = blogRepo.save(blog);
-        blogResponse = mapEntityToResponse(blogEntity);
-        return blogResponse;
+        return mapEntityToResponse(blogEntity);
     }
 
     @Override
-    public boolean removeBlog(UUID blogId) {
-        blogRepo.deleteById(blogId);
-        return true;
+    public String removeBlog(UUID blogId) {
+        Blog blog = blogRepo.findById(blogId).orElse(null);
+        if (blog != null) {
+            blogRepo.deleteById(blogId);
+            return blog.getId().toString();
+        } else {
+            log.warn("Blog {} not deleted because does not exist", blogId);
+        }
+        return null;
     }
 
     @Override
     public BlogResponse modifyBlog(BlogRequest blogRequest, boolean isUpdate) {
         Blog blog = blogRepo.findById(blogRequest.id()).orElse(null);
-        if (blog != null) {
-            // keep created fields so needs new clientRequest
-            return addBlog(new BlogRequest(
-                    blogRequest.id(),
-                    blogRequest.title(),
-                    blogRequest.slug(),
-                    blogRequest.content(),
-                    blogRequest.excerpt(),
-                    blogRequest.coverImageUrl(),
-                    blogRequest.status(),
-                    blogRequest.status().equalsIgnoreCase(PUBLISHED_STATUS) ? LocalDateTime.now() : null,
-                    blog.getCreatedBy(),
-                    blog.getCreatedAt(),
-                    null // updatedAt Changed on save with isUpdate = true
-            ), isUpdate);
+        if (blog == null) {
+            return null;
         }
-        return null;
+        return addBlog(new BlogRequest(
+                blogRequest.id(),
+                blogRequest.title(),
+                blogRequest.slug(),
+                blogRequest.content(),
+                blogRequest.excerpt(),
+                blogRequest.coverImageUrl(),
+                blogRequest.status(),
+                blogRequest.status().equalsIgnoreCase(PUBLISHED_STATUS) ? LocalDateTime.now() : null,
+                blog.getCreatedBy(),
+                blog.getCreatedAt(),
+                null // updatedAt Changed on save with isUpdate = true
+        ), isUpdate);
     }
 
     private BlogResponse mapEntityToResponse(Blog blogEntity) {
+        if (blogEntity == null) {
+            return null;
+        }
         return BlogResponse.builder()
                 .slug(blogEntity.getSlug())
                 .title(blogEntity.getTitle())

@@ -1,16 +1,22 @@
 package com.travelandrepeat.api.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 import java.util.UUID;
 
-public record LoginResponse(
-        UUID userId,
-        String email,
-        String name,
-        Boolean isActive,
-        String avatarUrl,
-        String accessToken,
-        String role,
-        List<String> permissions
-) {
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class LoginResponse {
+    private UUID userId;
+    private String email;
+    private String name;
+    private Boolean isActive;
+    private String avatarUrl;
+    private String role;
+    private List<String> permissions;
 }

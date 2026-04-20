@@ -2,7 +2,6 @@ package com.travelandrepeat.api.service;
 
 import com.travelandrepeat.api.dto.RecaptchaResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,17 +10,22 @@ import org.springframework.util.MultiValueMap;
 
 @Slf4j
 @Service
-@SuppressWarnings("unused")
 public class CaptchaValidatorServiceImpl implements CaptchaValidatorService {
 
-    @Value("${google.recaptcha.secret}")
-    private String secret;
+    private final String secret;
+    private final String verifyUrl;
+    private final RestTemplate restTemplate;
 
-    @Value("${google.recaptcha.verify-url}")
-    private String verifyUrl;
-
-    @Autowired
-    private RestTemplate restTemplate;
+    public CaptchaValidatorServiceImpl(
+            @Value("${google.recaptcha.secret}")
+            String secret,
+            @Value("${google.recaptcha.verify-url}")
+            String verifyUrl,
+            RestTemplate restTemplate){
+        this.secret = secret;
+        this.verifyUrl = verifyUrl;
+        this.restTemplate = restTemplate;
+    }
 
     public void verify(String token) throws Exception {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

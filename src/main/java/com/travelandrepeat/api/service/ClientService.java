@@ -9,6 +9,6 @@ import java.util.UUID;
 public interface ClientService {
     List<ClientResponse> findAll();
     ClientResponse addClient(ClientRequest clientRequest, boolean isUpdate);
-    boolean removeClient(UUID clientId);
+    String removeClient(UUID id);
     ClientResponse modifyClient(ClientRequest clientRequest, boolean isUpdate);
 }

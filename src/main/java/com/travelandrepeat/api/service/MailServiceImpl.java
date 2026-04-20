@@ -3,21 +3,18 @@ package com.travelandrepeat.api.service;
 import com.travelandrepeat.api.dto.QuotationFormRequest;
 import com.travelandrepeat.api.utils.AppUtils;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
-@SuppressWarnings("unused")
 public class MailServiceImpl implements MailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Autowired
-    private MimeMessage mimeMessage;
+    private final JavaMailSender mailSender;
+    private final MimeMessage mimeMessage;
 
     @Override
     public void sendMail(QuotationFormRequest request) {

@@ -3,8 +3,8 @@ package com.travelandrepeat.api.controller;
 import com.travelandrepeat.api.dto.PromotionRequest;
 import com.travelandrepeat.api.dto.PromotionResponse;
 import com.travelandrepeat.api.service.PromotionService;
-import jakarta.websocket.server.PathParam;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,45 +15,39 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/promotions")
 public class PromotionController {
 
-    @Autowired
-    private PromotionService promotionService;
+    private final PromotionService promotionService;
 
     @PreAuthorize("hasAuthority('PROMOTION_READ')")
-    @GetMapping(path = "/promotionList")
-    public ResponseEntity<List<PromotionResponse>> getPromotionList() {
-        return ResponseEntity.ok(promotionService.getPromotionList());
+    @GetMapping
+    public List<PromotionResponse> getPromotionList() {
+        return promotionService.getPromotionList();
     }
 
     @GetMapping(path = "/promotionListActive")
-    public ResponseEntity<List<PromotionResponse>> getPromotionListActive() {
-        return ResponseEntity.ok(promotionService.getPromotionListActive());
+    public List<PromotionResponse> getPromotionListActive() {
+        return promotionService.getPromotionListActive();
     }
 
     @PreAuthorize("hasAuthority('PROMOTION_CREATE')")
-    @PostMapping(
-            path = "/promotion",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PromotionResponse> addPromotion(
             @RequestPart(name = "image") MultipartFile image,
             @RequestPart(name = "promotionRequest") PromotionRequest promotionRequest) {
-        return ResponseEntity.ok(promotionService.addPromotion(image, promotionRequest, false));
+        return ResponseEntity.status(HttpStatus.CREATED).body(promotionService.addPromotion(image, promotionRequest, false));
     }
 
     @PreAuthorize("hasAuthority('PROMOTION_DELETE')")
-    @DeleteMapping(path = "/promotion")
-    public ResponseEntity<String> deletePromotion(@PathParam("promotionId") UUID promotionId) {
-        return ResponseEntity.ok(promotionService.removePromotion(promotionId));
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<String> deletePromotion(@PathVariable UUID id) {
+        return ResponseEntity.ok(promotionService.removePromotion(id));
     }
 
     @PreAuthorize("hasAuthority('PROMOTION_UPDATE')")
-    @PutMapping(
-            path = "/promotion",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PromotionResponse> updatePromotion(
             @RequestPart(name = "image") MultipartFile image,
             @RequestPart(name = "promotionRequest") PromotionRequest promotionRequest) {
@@ -61,9 +55,9 @@ public class PromotionController {
     }
 
     @PreAuthorize("hasAuthority('PROMOTION_ENABLE_DISABLE')")
-    @PutMapping(path = "/promotionEnableDisable")
-    public ResponseEntity<PromotionResponse> enableDisablePromotion(@PathParam("promotionId") UUID promotionId) {
-        return ResponseEntity.ok(promotionService.enableDisable(promotionId));
+    @PutMapping(path = "/{id}/enable-disable")
+    public ResponseEntity<PromotionResponse> enableDisablePromotion(@PathVariable UUID id) {
+        return ResponseEntity.ok(promotionService.enableDisable(id));
     }
 
 

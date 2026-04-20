@@ -5,8 +5,11 @@ import com.travelandrepeat.api.dto.LoginResponse;
 import com.travelandrepeat.api.dto.UserLogged;
 import com.travelandrepeat.api.dto.UserLoginDetails;
 import com.travelandrepeat.api.entity.User;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,24 +21,46 @@ import static com.travelandrepeat.api.dto.Role.*;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-    @Autowired
-    private UserService userService;
+    private final boolean isLocal;
+    private final UserService userService;
+
+    public LoginServiceImpl(
+            @Value("${env.local}") boolean isLocal,
+            UserService userService) {
+        this.isLocal = isLocal;
+        this.userService = userService;
+    }
 
     @Autowired
     private JwtService jwtService;
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) {
+    public String login(LoginRequest loginRequest, HttpServletResponse response) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User userResult = userService.getUserByEmail(loginRequest.email());
 
-        if (userResult == null) return null;
+        if (userResult == null) return "USER_NOT_FOUND"; // user does not exist
+
+        if (!userResult.getIsActive()) return "ACCOUNT_DISABLED"; // account disabled
 
         if (!passwordEncoder.matches(loginRequest.password(), userResult.getHashedPassword()))
-            return buildLoginResponse(userResult, null);
+            return "INVALID_PASSWORD"; // invalid password
 
         String token = jwtService.generateToken(userResult);
-        return buildLoginResponse(userResult, token);
+        cookieOperations(token, response, true);
+
+        return "Login Success: " + userResult.getUserId() + " -> " + userResult.getDisplayName();
+    }
+
+    private void cookieOperations(String token, HttpServletResponse response, boolean isCreate) {
+        ResponseCookie cookie = ResponseCookie.from("accessToken", token)
+                .httpOnly(true)
+                .secure(!isLocal)// localhost → false
+                .path("/")
+                .maxAge(isCreate ? 60 * 60 : 0)
+                .sameSite(isLocal ? "Lax" : "None")
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     @Override
@@ -54,17 +79,10 @@ public class LoginServiceImpl implements LoginService {
         return buildLoginResponse(userLoginDetails.getUser(), role, permissions);
     }
 
-    private LoginResponse buildLoginResponse(User user, String token) {
-        return new LoginResponse(
-                user.getUserId(),
-                user.getEmail(),
-                user.getDisplayName(),
-                user.getIsActive(),
-                user.getAvatarUrl(),
-                token,
-                null,
-                null
-        );
+    @Override
+    public String logout(HttpServletResponse response) {
+        cookieOperations("", response, false);
+        return "Successfully user deauthenticated!";
     }
 
     private LoginResponse buildLoginResponse(UserLogged user, String role, List<String> permissions) {
@@ -74,7 +92,6 @@ public class LoginServiceImpl implements LoginService {
                 user.displayName(),
                 user.isActive(),
                 user.avatarUrl(),
-                null,
                 role,
                 permissions
         );
