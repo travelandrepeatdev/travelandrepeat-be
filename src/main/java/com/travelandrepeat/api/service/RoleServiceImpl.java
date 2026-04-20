@@ -2,29 +2,22 @@ package com.travelandrepeat.api.service;
 
 import com.travelandrepeat.api.entity.Role;
 import com.travelandrepeat.api.entity.RolePermission;
-import com.travelandrepeat.api.entity.RolePermissionId;
-import com.travelandrepeat.api.entity.UserRole;
 import com.travelandrepeat.api.repository.RolePermissionRepo;
 import com.travelandrepeat.api.repository.RoleRepo;
-import com.travelandrepeat.api.repository.UserRoleRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    @Autowired
-    private RoleRepo roleRepo;
-
-    @Autowired
-    private RolePermissionRepo rolePermissionRepo;
+    private final RoleRepo roleRepo;
+    private final RolePermissionRepo rolePermissionRepo;
 
     @Override
     public List<Role> getAll() {
@@ -70,7 +63,7 @@ public class RoleServiceImpl implements RoleService {
             rolePermissionRepo.deleteByRoleId(rolePermissionList.get(0).getRoleId());
 
             if (rolePermissionList.get(0).getPermissionId() != null) {
-                rolePermissionList.forEach(rolePermission -> rolePermissionRepo.save(rolePermission));
+                rolePermissionList.forEach(rolePermissionRepo::save);
                 return rolePermissionList;
             }
         }

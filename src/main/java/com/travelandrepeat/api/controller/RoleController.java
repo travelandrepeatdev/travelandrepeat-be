@@ -3,7 +3,8 @@ package com.travelandrepeat.api.controller;
 import com.travelandrepeat.api.entity.Role;
 import com.travelandrepeat.api.entity.RolePermission;
 import com.travelandrepeat.api.service.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/roles")
+@RequiredArgsConstructor
 public class RoleController {
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -33,7 +34,7 @@ public class RoleController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Role> createRole(@RequestBody Role role) {
-        return ResponseEntity.ok(roleService.createRole(role));
+        return ResponseEntity.status(HttpStatus.CREATED).body(roleService.createRole(role));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

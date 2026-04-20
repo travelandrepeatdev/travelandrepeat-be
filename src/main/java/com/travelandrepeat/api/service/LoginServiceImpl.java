@@ -21,11 +21,15 @@ import static com.travelandrepeat.api.dto.Role.*;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-    @Value("${env.local}")
-    private boolean isLocal;
+    private final boolean isLocal;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public LoginServiceImpl(
+            @Value("${env.local}") boolean isLocal,
+            UserService userService) {
+        this.isLocal = isLocal;
+        this.userService = userService;
+    }
 
     @Autowired
     private JwtService jwtService;

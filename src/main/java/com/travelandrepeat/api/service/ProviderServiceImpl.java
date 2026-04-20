@@ -4,8 +4,8 @@ import com.travelandrepeat.api.dto.ProviderRequest;
 import com.travelandrepeat.api.dto.ProviderResponse;
 import com.travelandrepeat.api.entity.Provider;
 import com.travelandrepeat.api.repository.ProviderRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ProviderServiceImpl implements ProviderService {
 
-    @Autowired
-    private ProviderRepo providerRepo;
+    private final ProviderRepo providerRepo;
 
     @Override
     public List<ProviderResponse> getProviderList() {

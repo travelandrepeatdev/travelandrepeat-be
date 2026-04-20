@@ -4,9 +4,8 @@ import com.travelandrepeat.api.dto.BlogRequest;
 import com.travelandrepeat.api.dto.BlogResponse;
 import com.travelandrepeat.api.entity.Blog;
 import com.travelandrepeat.api.repository.BlogRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,11 +14,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class BlogServiceImpl implements BlogService {
 
-    @Autowired
-    private BlogRepo blogRepo;
+    private final BlogRepo blogRepo;
 
     public static final String PUBLISHED_STATUS = "Publicado";
 

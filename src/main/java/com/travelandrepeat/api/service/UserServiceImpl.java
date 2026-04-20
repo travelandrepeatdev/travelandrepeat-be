@@ -5,7 +5,7 @@ import com.travelandrepeat.api.entity.User;
 import com.travelandrepeat.api.entity.UserRole;
 import com.travelandrepeat.api.repository.UserRepo;
 import com.travelandrepeat.api.repository.UserRoleRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,14 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private UserRoleRepo userRoleRepo;
+    private final UserRepo userRepo;
+    private final UserRoleRepo userRoleRepo;
 
     @Override
     public User getUserByEmail(String email) {

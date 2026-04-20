@@ -2,18 +2,18 @@ package com.travelandrepeat.api.service;
 
 import com.travelandrepeat.api.entity.Permission;
 import com.travelandrepeat.api.repository.PermissionRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
-    @Autowired
-    private PermissionRepo permissionRepo;
+    private final PermissionRepo permissionRepo;
 
     @Override
     public List<Permission> getPermissionList() {

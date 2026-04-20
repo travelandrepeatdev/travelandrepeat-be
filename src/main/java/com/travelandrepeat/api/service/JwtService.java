@@ -6,7 +6,7 @@ import com.travelandrepeat.api.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class JwtService {
 
-    @Autowired
-    private JwtConfig jwtConfig;
+    private final JwtConfig jwtConfig;
 
     public String generateToken(User user) {
 

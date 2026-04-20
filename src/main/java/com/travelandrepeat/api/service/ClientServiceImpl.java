@@ -4,8 +4,8 @@ import com.travelandrepeat.api.dto.ClientRequest;
 import com.travelandrepeat.api.dto.ClientResponse;
 import com.travelandrepeat.api.entity.Client;
 import com.travelandrepeat.api.repository.ClientRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    @Autowired
-    private ClientRepo clientRepo;
+    private final ClientRepo clientRepo;
 
     @Override
     public List<ClientResponse> findAll() {

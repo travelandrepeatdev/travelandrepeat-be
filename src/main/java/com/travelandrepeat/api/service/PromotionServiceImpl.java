@@ -4,28 +4,25 @@ import com.travelandrepeat.api.dto.PromotionRequest;
 import com.travelandrepeat.api.dto.PromotionResponse;
 import com.travelandrepeat.api.entity.Promotion;
 import com.travelandrepeat.api.repository.PromotionRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class PromotionServiceImpl implements PromotionService {
 
-    @Autowired
-    private PromotionRepo promotionRepo;
-
-    @Autowired
-    private PromotionImageService promotionImageService;
+    private final PromotionRepo promotionRepo;
+    private final PromotionImageService promotionImageService;
 
     @Override
     @Transactional

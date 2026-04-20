@@ -2,7 +2,8 @@ package com.travelandrepeat.api.controller;
 
 import com.travelandrepeat.api.entity.Permission;
 import com.travelandrepeat.api.service.PermissionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/permissions")
 public class PermissionController {
 
-    @Autowired
-    private PermissionService permissionService;
+    private final PermissionService permissionService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -25,6 +26,7 @@ public class PermissionController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Permission addPermission(@RequestBody Permission permission) {
         return permissionService.addPermission(permission);
     }
