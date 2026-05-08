@@ -75,7 +75,7 @@ public class PromotionServiceImpl implements PromotionService {
     public String removePromotion(UUID promotionId) {
         Promotion promotion = promotionRepo.findById(promotionId).orElse(null);
         if (promotion != null) {
-            promotionImageService.remove(promotion.getImageUrl());
+            promotionImageService.remove(promotion.getImageUrl() == null ? "" : promotion.getImageUrl());
             promotionRepo.deleteById(promotionId);
             return promotion.getId().toString();
         } else {
@@ -91,7 +91,7 @@ public class PromotionServiceImpl implements PromotionService {
         if (promotion == null) {
             return null;
         }
-        promotionImageService.remove(promotion.getImageUrl());
+        promotionImageService.remove(promotion.getImageUrl() == null ? "" : promotion.getImageUrl());
         return addPromotion(image, new PromotionRequest(
                 promotion.getId(),
                 promotionRequest.getTitle(),

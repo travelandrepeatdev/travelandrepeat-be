@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface BlogRepo extends JpaRepository<Blog, UUID> {
+    Blog findBySlug(String slug);
 }

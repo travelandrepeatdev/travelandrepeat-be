@@ -3,12 +3,13 @@ package com.travelandrepeat.api.controller;
 import com.travelandrepeat.api.dto.BlogRequest;
 import com.travelandrepeat.api.dto.BlogResponse;
 import com.travelandrepeat.api.service.BlogService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,9 +28,11 @@ public class BlogController {
     }
 
     @PreAuthorize("hasAuthority('BLOG_CREATE')")
-    @PostMapping
-    public ResponseEntity<BlogResponse> addBlog(@RequestBody BlogRequest blogRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(blogService.addBlog(blogRequest, false));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BlogResponse> addBlog(
+            @RequestPart(name = "image") MultipartFile image,
+            @RequestPart(name = "blogRequest") BlogRequest blogRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(blogService.addBlog(image, blogRequest, false));
     }
 
     @PreAuthorize("hasAuthority('BLOG_DELETE')")
@@ -39,8 +42,20 @@ public class BlogController {
     }
 
     @PreAuthorize("hasAuthority('BLOG_UPDATE')")
-    @PutMapping
-    public ResponseEntity<BlogResponse> updateClient(@RequestBody BlogRequest blogRequest) {
-        return ResponseEntity.ok(blogService.modifyBlog(blogRequest, true));
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BlogResponse> updateClient(
+            @RequestPart(name = "image") MultipartFile image,
+            @RequestPart(name = "blogRequest") BlogRequest blogRequest) {
+        return ResponseEntity.ok(blogService.modifyBlog(image, blogRequest, true));
+    }
+
+    @GetMapping(path = "/published")
+    public List<BlogResponse> getPublishedBlogs() {
+        return blogService.getBlogPublishedList();
+    }
+
+    @GetMapping(path = "/slug/{slug}")
+    public BlogResponse getBlogBySlug(@PathVariable String slug) {
+        return blogService.getBlogBySlug(slug);
     }
 }
