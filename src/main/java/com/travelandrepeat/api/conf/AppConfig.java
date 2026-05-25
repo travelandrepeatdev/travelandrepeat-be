@@ -15,7 +15,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
@@ -62,7 +61,8 @@ public class AppConfig {
                 .cors(Customizer.withDefaults())
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                        .permitAll()
                         // endpoints públicos
                         .requestMatchers(
                                 "/auth/login",
@@ -70,7 +70,9 @@ public class AppConfig {
                                 "/dollar/rate",
                                 "/promotions/promotionListActive",
                                 "/mail/sendQuotationForm",
-                                "/images/**"
+                                "/images/**",
+                                "/blogs/published",
+                                "/blogs/slug/**"
                         ).permitAll()
                         // lo demás requiere auth
                         .anyRequest().authenticated()

@@ -45,6 +45,10 @@ spring:
       data-source-properties:
         prepareThreshold: 0
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
 # Env local always false in prod
 env:
   local: false

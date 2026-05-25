@@ -7,6 +7,7 @@ import com.travelandrepeat.api.repository.BlogRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class BlogServiceImpl implements BlogService {
 
     private final BlogRepo blogRepo;
+    private final PromotionImageService promotionImageService;
 
     public static final String PUBLISHED_STATUS = "Publicado";
 
@@ -42,8 +44,12 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public BlogResponse addBlog(BlogRequest blogRequest, boolean isUpdate) {
+    public BlogResponse addBlog(MultipartFile image, BlogRequest blogRequest, boolean isUpdate) {
         Blog blog = mapRequestToEntity(blogRequest, isUpdate);
+
+        String imageUrl = promotionImageService.save(image);
+        blog.setCoverImageUrl(imageUrl);
+
         Blog blogEntity = blogRepo.save(blog);
         return mapEntityToResponse(blogEntity);
     }
@@ -52,6 +58,7 @@ public class BlogServiceImpl implements BlogService {
     public String removeBlog(UUID blogId) {
         Blog blog = blogRepo.findById(blogId).orElse(null);
         if (blog != null) {
+            promotionImageService.remove(blog.getCoverImageUrl() == null ? "" : blog.getCoverImageUrl());
             blogRepo.deleteById(blogId);
             return blog.getId().toString();
         } else {
@@ -61,12 +68,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public BlogResponse modifyBlog(BlogRequest blogRequest, boolean isUpdate) {
+    public BlogResponse modifyBlog(MultipartFile image, BlogRequest blogRequest, boolean isUpdate) {
         Blog blog = blogRepo.findById(blogRequest.id()).orElse(null);
         if (blog == null) {
             return null;
         }
-        return addBlog(new BlogRequest(
+        promotionImageService.remove(blog.getCoverImageUrl() == null ? "" : blog.getCoverImageUrl());
+        return addBlog(image, new BlogRequest(
                 blogRequest.id(),
                 blogRequest.title(),
                 blogRequest.slug(),
@@ -79,6 +87,19 @@ public class BlogServiceImpl implements BlogService {
                 blog.getCreatedAt(),
                 null // updatedAt Changed on save with isUpdate = true
         ), isUpdate);
+    }
+
+    @Override
+    public List<BlogResponse> getBlogPublishedList() {
+        return getBlogList().stream()
+                .filter(b -> b.status().equalsIgnoreCase(PUBLISHED_STATUS))
+                .toList();
+    }
+
+    @Override
+    public BlogResponse getBlogBySlug(String slug) {
+        Blog blog = blogRepo.findBySlug(slug);
+        return mapEntityToResponse(blog);
     }
 
     private BlogResponse mapEntityToResponse(Blog blogEntity) {

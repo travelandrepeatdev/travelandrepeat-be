@@ -5,10 +5,10 @@ import com.travelandrepeat.api.dto.UserLoginDetails;
 import com.travelandrepeat.api.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,23 +27,24 @@ public class JwtService {
         roles.addAll(permissions);
 
         return Jwts.builder()
-                .setSubject(user.getUserId().toString())
+                .subject(user.getUserId().toString())
                 .claim("email", user.getEmail())
                 .claim("name", user.getDisplayName())
                 .claim("avatarUrl", user.getAvatarUrl())
                 .claim("isActive", user.getIsActive())
                 .claim("roles", roles)
-                .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plusSeconds(jwtConfig.getExpiration())))
-                .signWith(jwtConfig.signingKey(), SignatureAlgorithm.HS256)
+                .issuedAt(Date.from(Instant.now()))
+                .expiration(Date.from(Instant.now().plusSeconds(jwtConfig.getExpiration())))
+                .signWith(jwtConfig.signingKey())
                 .compact();
     }
 
     public Claims parseToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(jwtConfig.signingKey())
+        SecretKeySpec secretKeySpec = new SecretKeySpec(jwtConfig.signingKey().getEncoded(), jwtConfig.signingKey().getAlgorithm());
+        return Jwts.parser()
+                .verifyWith(secretKeySpec)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

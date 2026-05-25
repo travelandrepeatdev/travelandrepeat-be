@@ -39,6 +39,11 @@ spring:
     password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver
 
+  # Upload max size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
 # MODIFIABLE: env local set true (with IDE) when is not using docker or prod
 env:
   local: false
