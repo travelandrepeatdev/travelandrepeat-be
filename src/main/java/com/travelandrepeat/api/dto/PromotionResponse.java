@@ -12,6 +12,7 @@ import java.util.UUID;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record PromotionResponse(
         UUID id,
+        Short orderNumber,
         String title,
         String description,
         String destination,

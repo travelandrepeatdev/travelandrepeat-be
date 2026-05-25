@@ -23,6 +23,9 @@ public class Promotion {
     @Column(nullable = false, unique = true)
     private UUID id;
 
+    @Column(nullable = false, name = "order_number")
+    private Short orderNumber;
+
     @Column(nullable = false)
     private String title;
 

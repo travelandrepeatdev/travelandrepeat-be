@@ -14,6 +14,7 @@ import java.util.UUID;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PromotionRequest {
     private UUID id;
+    private Short orderNumber;
     private String title;
     private String description;
     private String destination;

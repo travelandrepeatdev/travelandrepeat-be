@@ -39,6 +39,7 @@ insert into tyrdb.public.permissions (permission_id, name, description, created_
 insert into tyrdb.public.permissions (permission_id, name, description, created_at) values ('e1c7523c-585c-4d76-93bc-73efd1ae1501', 'PROVIDER_READ', 'Permiso para visualizar proveedores', now());
 insert into tyrdb.public.permissions (permission_id, name, description, created_at) values ('9fa38e62-1a08-4964-bb50-b087835f965a', 'DASHBOARD_FINANCIAL', 'Permiso para visualizar datos finacieros del menu principal', now());
 insert into tyrdb.public.permissions (permission_id, name, description, created_at) values ('656851f3-104e-45d4-ae26-bb3c2928483e', 'DASHBOARD_ACTIVITY', 'Permiso para visualizar las actividades del menu principal', now());
+insert into tyrdb.public.permissions (permission_id, name, description, created_at) values ('ee3c341e-425d-4f82-a944-eeba77e89bec', 'PROMOTION_ORDER', 'Permiso para ordenar promociones', now());
 
 insert into tyrdb.public.role_permissions (role_id, permission_id) values ('5775047b-fd11-4f8e-8bb9-78df36e0960b', '24319b6f-aba4-4aee-ac06-3ba6785b3ae5');
 insert into tyrdb.public.role_permissions (role_id, permission_id) values ('5775047b-fd11-4f8e-8bb9-78df36e0960b', '26d55de9-add9-4db6-b115-68cbcf8700c3');
@@ -71,3 +72,4 @@ insert into tyrdb.public.role_permissions (role_id, permission_id) values ('5775
 insert into tyrdb.public.role_permissions (role_id, permission_id) values ('5775047b-fd11-4f8e-8bb9-78df36e0960b', 'e1c7523c-585c-4d76-93bc-73efd1ae1501');
 insert into tyrdb.public.role_permissions (role_id, permission_id) values ('5775047b-fd11-4f8e-8bb9-78df36e0960b', '9fa38e62-1a08-4964-bb50-b087835f965a');
 insert into tyrdb.public.role_permissions (role_id, permission_id) values ('5775047b-fd11-4f8e-8bb9-78df36e0960b', '656851f3-104e-45d4-ae26-bb3c2928483e');
+insert into tyrdb.public.role_permissions (role_id, permission_id) values ('5775047b-fd11-4f8e-8bb9-78df36e0960b', 'ee3c341e-425d-4f82-a944-eeba77e89bec');
