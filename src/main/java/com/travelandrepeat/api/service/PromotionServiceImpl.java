@@ -32,7 +32,7 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotion = mapRequestToEntity(promotionRequest, isUpdate);
 
         String imageUrl = promotionImageService.save(image);
-        promotion.setImageUrl(imageUrl);
+        promotion.setImageUrl(image != null && !image.isEmpty() ? imageUrl : promotionRequest.getImageUrl());
 
         Promotion promotionEntity = promotionRepo.save(promotion);
         promotionResponse = mapEntityToResponse(promotionEntity);
@@ -94,7 +94,11 @@ public class PromotionServiceImpl implements PromotionService {
         if (promotion == null) {
             return null;
         }
-        promotionImageService.remove(promotion.getImageUrl() == null ? "" : promotion.getImageUrl());
+        // contains image
+        if (image != null && !image.isEmpty()) {
+            promotionImageService.remove(promotion.getImageUrl() == null ? "" : promotion.getImageUrl());
+        }
+
         return addPromotion(image, new PromotionRequest(
                 promotion.getId(),
                 promotionRequest.getOrderNumber(),

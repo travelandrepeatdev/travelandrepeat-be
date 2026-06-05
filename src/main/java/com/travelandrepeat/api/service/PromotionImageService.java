@@ -86,9 +86,6 @@ public class PromotionImageService {
             } catch (IOException e) {
                 log.error("Failed to remove file {}", imageUrl, e);
             }
-        } else {
-            log.warn("Promotion image not used");
-            return null;
         }
 
         if (!wasDeleted) {

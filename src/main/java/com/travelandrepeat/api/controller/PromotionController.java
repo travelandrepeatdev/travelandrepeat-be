@@ -35,7 +35,7 @@ public class PromotionController {
     @PreAuthorize("hasAuthority('PROMOTION_CREATE')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PromotionResponse> addPromotion(
-            @RequestPart(name = "image") MultipartFile image,
+            @RequestPart(name = "image", required = false) MultipartFile image,
             @RequestPart(name = "promotionRequest") PromotionRequest promotionRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(promotionService.addPromotion(image, promotionRequest, false));
     }
@@ -49,7 +49,7 @@ public class PromotionController {
     @PreAuthorize("hasAuthority('PROMOTION_UPDATE')")
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PromotionResponse> updatePromotion(
-            @RequestPart(name = "image") MultipartFile image,
+            @RequestPart(name = "image", required = false) MultipartFile image,
             @RequestPart(name = "promotionRequest") PromotionRequest promotionRequest) {
         return ResponseEntity.ok(promotionService.modifyPromotion(image, promotionRequest, true));
     }
