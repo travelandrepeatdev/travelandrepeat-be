@@ -60,5 +60,9 @@ public class PromotionController {
         return ResponseEntity.ok(promotionService.enableDisable(id));
     }
 
-
+    @PreAuthorize("hasAuthority('PROMOTION_ORDER')")
+    @PutMapping(path = "/order")
+    public ResponseEntity<List<PromotionResponse>> orderPromotions(@RequestBody List<PromotionRequest> promotionRequestList) {
+        return ResponseEntity.ok(promotionService.orderPromotions(promotionRequestList));
+    }
 }

@@ -104,6 +104,7 @@ CREATE TABLE IF NOT EXISTS providers (
 -- PROVIDER TABLE ------------------------------------------
 CREATE TABLE IF NOT EXISTS promotions (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_number smallint,
     title text NOT NULL,
     description text NOT NULL,
     destination text NOT NULL,

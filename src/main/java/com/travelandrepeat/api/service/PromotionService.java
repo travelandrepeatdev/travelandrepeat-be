@@ -14,4 +14,5 @@ public interface PromotionService {
     List<PromotionResponse> getPromotionList();
     PromotionResponse enableDisable(UUID promotionId);
     List<PromotionResponse> getPromotionListActive();
+    List<PromotionResponse> orderPromotions(List<PromotionRequest> promotionRequestList);
 }

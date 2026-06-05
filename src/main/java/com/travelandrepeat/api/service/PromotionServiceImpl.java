@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +45,7 @@ public class PromotionServiceImpl implements PromotionService {
         }
         return PromotionResponse.builder()
                 .id(promotionEntity.getId())
+                .orderNumber(promotionEntity.getOrderNumber())
                 .currency(promotionEntity.getCurrency())
                 .description(promotionEntity.getDescription())
                 .imageUrl(promotionEntity.getImageUrl())
@@ -58,6 +60,7 @@ public class PromotionServiceImpl implements PromotionService {
     private Promotion mapRequestToEntity(PromotionRequest promotionRequest, boolean isUpdate) {
         return Promotion.builder()
                 .id(isUpdate ? promotionRequest.getId() : null)
+                .orderNumber(promotionRequest.getOrderNumber())
                 .description(promotionRequest.getDescription())
                 .isActive(promotionRequest.getIsActive())
                 .currency(promotionRequest.getCurrency())
@@ -94,6 +97,7 @@ public class PromotionServiceImpl implements PromotionService {
         promotionImageService.remove(promotion.getImageUrl() == null ? "" : promotion.getImageUrl());
         return addPromotion(image, new PromotionRequest(
                 promotion.getId(),
+                promotionRequest.getOrderNumber(),
                 promotionRequest.getTitle(),
                 promotionRequest.getDescription(),
                 promotionRequest.getDestination(),
@@ -114,6 +118,7 @@ public class PromotionServiceImpl implements PromotionService {
         promotionList.forEach(p -> promotionResponseList.add(
                 PromotionResponse.builder()
                         .id(p.getId())
+                        .orderNumber(p.getOrderNumber())
                         .description(p.getDescription())
                         .isActive(p.isActive())
                         .currency(p.getCurrency())
@@ -126,7 +131,7 @@ public class PromotionServiceImpl implements PromotionService {
                         .createdAt(p.getCreatedAt())
                         .build())
         );
-        return promotionResponseList;
+        return promotionResponseList.stream().sorted(Comparator.comparingInt(PromotionResponse::orderNumber)).toList();
     }
 
     @Override
@@ -146,6 +151,28 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionRepo.findAll().stream()
                 .filter(Promotion::isActive)
                 .map(this::mapEntityToResponse)
+                .sorted(Comparator.comparingInt(PromotionResponse::orderNumber))
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public List<PromotionResponse> orderPromotions(List<PromotionRequest> promotionRequestList) {
+        List<PromotionResponse> result = new ArrayList<>();
+
+        promotionRequestList.forEach(p -> {
+            Promotion promotion = promotionRepo.findById(p.getId()).orElseGet(null);
+            result.add(mapEntityToResponse(promotion));
+
+            if (promotion != null) {
+                promotion.setOrderNumber(p.getOrderNumber());
+                promotion.setUpdatedAt(LocalDateTime.now());
+                promotionRepo.save(promotion);
+                log.info("Promotion {} ordered number {}", p.getId(), p.getOrderNumber());
+            } else {
+                log.warn("Promotion {} not found, skipping the order {}", p.getId(), p.getOrderNumber());
+            }
+        });
+        return result;
     }
 }
