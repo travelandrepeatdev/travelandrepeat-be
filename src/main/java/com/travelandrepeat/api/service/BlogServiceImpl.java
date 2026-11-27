@@ -48,7 +48,7 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = mapRequestToEntity(blogRequest, isUpdate);
 
         String imageUrl = promotionImageService.save(image);
-        blog.setCoverImageUrl(imageUrl);
+        blog.setCoverImageUrl(image != null && !image.isEmpty() ? imageUrl : blogRequest.coverImageUrl());
 
         Blog blogEntity = blogRepo.save(blog);
         return mapEntityToResponse(blogEntity);
@@ -73,7 +73,9 @@ public class BlogServiceImpl implements BlogService {
         if (blog == null) {
             return null;
         }
-        promotionImageService.remove(blog.getCoverImageUrl() == null ? "" : blog.getCoverImageUrl());
+        if (image != null && !image.isEmpty()) {
+            promotionImageService.remove(blog.getCoverImageUrl() == null ? "" : blog.getCoverImageUrl());
+        }
         return addBlog(image, new BlogRequest(
                 blogRequest.id(),
                 blogRequest.title(),

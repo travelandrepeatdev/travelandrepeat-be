@@ -30,7 +30,7 @@ public class BlogController {
     @PreAuthorize("hasAuthority('BLOG_CREATE')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BlogResponse> addBlog(
-            @RequestPart(name = "image") MultipartFile image,
+            @RequestPart(name = "image", required = false) MultipartFile image,
             @RequestPart(name = "blogRequest") BlogRequest blogRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(blogService.addBlog(image, blogRequest, false));
     }
@@ -44,7 +44,7 @@ public class BlogController {
     @PreAuthorize("hasAuthority('BLOG_UPDATE')")
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BlogResponse> updateClient(
-            @RequestPart(name = "image") MultipartFile image,
+            @RequestPart(name = "image", required = false) MultipartFile image,
             @RequestPart(name = "blogRequest") BlogRequest blogRequest) {
         return ResponseEntity.ok(blogService.modifyBlog(image, blogRequest, true));
     }
